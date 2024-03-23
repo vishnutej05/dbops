@@ -258,7 +258,7 @@ app.post("/addusers", async (req, res) => {
 
 app.get("/getusers", async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await dashboard.find();
     res.json(users);
   } catch (err) {
     console.error("Error:", err);
