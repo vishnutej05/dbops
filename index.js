@@ -6,7 +6,7 @@ const cors = require("cors");
 const CryptoJS = require("crypto-js");
 
 const app = express();
-const port = 3000;
+const port = 4000;
 require("dotenv").config();
 
 const secretKey = "password secret key";
@@ -28,21 +28,17 @@ const dashboardschema = new mongoose.Schema({
 const dashboard = mongoose.model("dashboard", dashboardschema);
 
 // Connect to MongoDB database named "DocType"
-mongoose
-  .connect(
-    "mongodb+srv://vishnutej345:3CJkhCrfsbTGwbXW@cluster0.cbdtlhz.mongodb.net/DocType",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
-  .then(() => {
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_CONNECTION_URL);
     console.log("Connected to MongoDB database");
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error("Error connecting to MongoDB:", err);
     process.exit(1);
-  });
+  }
+};
+connectDB();
+module.exports = connectDB;
 
 app.use(cors());
 app.use(express.json({ limit: "25mb" }));
@@ -259,6 +255,7 @@ app.post("/addusers", async (req, res) => {
 app.get("/getusers", async (req, res) => {
   try {
     const users = await dashboard.find();
+    // console.log(users);
     res.json(users);
   } catch (err) {
     console.error("Error:", err);
